@@ -14,8 +14,10 @@
 import java
 import semmle.code.java.security.UrlRedirectQuery
 import UrlRedirectFlow::PathGraph
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 from UrlRedirectFlow::PathNode source, UrlRedirectFlow::PathNode sink
 where UrlRedirectFlow::flowPath(source, sink)
-select sink.getNode(), source, sink, "Untrusted URL redirection depends on a $@.", source.getNode(),
-  "user-provided value"
+select sink.getNode(), source, sink,
+  "Untrusted URL redirection depends on a $@." + getSinkModelQueryRepr(sink.getNode().asExpr()),
+  source.getNode(), "user-provided value"
