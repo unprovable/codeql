@@ -17,6 +17,7 @@ import java
 import semmle.code.java.security.PathCreation
 import semmle.code.java.security.TaintedPathQuery
 import TaintedPathFlow::PathGraph
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 /**
  * Gets the data-flow node at which to report a path ending at `sink`.
@@ -34,5 +35,6 @@ DataFlow::Node getReportingNode(DataFlow::Node sink) {
 
 from TaintedPathFlow::PathNode source, TaintedPathFlow::PathNode sink
 where TaintedPathFlow::flowPath(source, sink)
-select getReportingNode(sink.getNode()), source, sink, "This path depends on a $@.",
-  source.getNode(), "user-provided value"
+select getReportingNode(sink.getNode()), source, sink,
+  "This path depends on a $@." + getSinkModelQueryRepr(sink.getNode().asExpr()), source.getNode(),
+  "user-provided value"

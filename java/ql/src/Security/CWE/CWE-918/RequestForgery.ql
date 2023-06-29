@@ -14,8 +14,10 @@
 import java
 import semmle.code.java.security.RequestForgeryConfig
 import RequestForgeryFlow::PathGraph
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 from RequestForgeryFlow::PathNode source, RequestForgeryFlow::PathNode sink
 where RequestForgeryFlow::flowPath(source, sink)
-select sink.getNode(), source, sink, "Potential server-side request forgery due to a $@.",
-  source.getNode(), "user-provided value"
+select sink.getNode(), source, sink,
+  "Potential server-side request forgery due to a $@." +
+    getSinkModelQueryRepr(sink.getNode().asExpr()), source.getNode(), "user-provided value"

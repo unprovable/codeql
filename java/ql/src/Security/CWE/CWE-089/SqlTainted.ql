@@ -16,8 +16,11 @@ import java
 import semmle.code.java.dataflow.FlowSources
 import semmle.code.java.security.SqlInjectionQuery
 import QueryInjectionFlow::PathGraph
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 from
   QueryInjectionSink query, QueryInjectionFlow::PathNode source, QueryInjectionFlow::PathNode sink
 where queryIsTaintedBy(query, source, sink)
-select query, source, sink, "This query depends on a $@.", source.getNode(), "user-provided value"
+select query, source, sink,
+  "This query depends on a $@." + getSinkModelQueryRepr(sink.getNode().asExpr()), source.getNode(),
+  "user-provided value"

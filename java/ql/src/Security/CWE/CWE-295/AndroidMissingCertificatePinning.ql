@@ -12,6 +12,7 @@
 
 import java
 import semmle.code.java.security.AndroidCertificatePinningQuery
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 from DataFlow::Node node, string domain, string msg
 where
@@ -19,4 +20,6 @@ where
   if domain = ""
   then msg = "(no explicitly trusted domains)"
   else msg = "(" + domain + " is not trusted by a pin)"
-select node, "This network call does not implement certificate pinning. " + msg
+select node,
+  "This network call does not implement certificate pinning. " + msg +
+    getSinkModelQueryRepr(node.asExpr())

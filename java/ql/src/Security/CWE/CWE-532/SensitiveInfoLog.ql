@@ -14,8 +14,10 @@
 import java
 import semmle.code.java.security.SensitiveLoggingQuery
 import SensitiveLoggerFlow::PathGraph
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 from SensitiveLoggerFlow::PathNode source, SensitiveLoggerFlow::PathNode sink
 where SensitiveLoggerFlow::flowPath(source, sink)
-select sink.getNode(), source, sink, "This $@ is written to a log file.", source.getNode(),
-  "potentially sensitive information"
+select sink.getNode(), source, sink,
+  "This $@ is written to a log file." + getSinkModelQueryRepr(sink.getNode().asExpr()),
+  source.getNode(), "potentially sensitive information"

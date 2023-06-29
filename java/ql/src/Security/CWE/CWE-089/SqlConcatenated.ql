@@ -16,6 +16,7 @@ import java
 import semmle.code.java.security.SqlConcatenatedLib
 import semmle.code.java.security.SqlInjectionQuery
 import semmle.code.java.security.SqlConcatenatedQuery
+private import semmle.code.java.AutomodelSinkTriageUtils
 
 from QueryInjectionSink query, Expr uncontrolled
 where
@@ -28,5 +29,6 @@ where
     )
   ) and
   not queryIsTaintedBy(query, _, _)
-select query, "Query built by concatenation with $@, which may be untrusted.", uncontrolled,
-  "this expression"
+select query,
+  "Query built by concatenation with $@, which may be untrusted." +
+    getSinkModelQueryRepr(query.asExpr()), uncontrolled, "this expression"
