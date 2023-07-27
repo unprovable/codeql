@@ -1,5 +1,5 @@
 package javax.jms;
 
 public interface MessageListener {
-    void onMessage(Message message);
+    void onMessage(Message message); // $source
 }

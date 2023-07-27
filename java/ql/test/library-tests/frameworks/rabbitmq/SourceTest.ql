@@ -8,7 +8,11 @@ module SourceTest implements TestSig {
   predicate hasActualResult(Location location, string element, string tag, string value) {
     tag = "source" and
     exists(RemoteFlowSource source |
-      not source.asParameter().getCallable().getDeclaringType().hasName("DefaultConsumer") and
+      not source
+          .asParameter()
+          .getCallable()
+          .getDeclaringType()
+          .hasName(["Consumer", "DefaultConsumer"]) and
       source.getLocation() = location and
       element = source.toString() and
       value = ""
