@@ -129,6 +129,9 @@ class FrameworkModeMetadataExtractor extends string {
         e.(DataFlow::ExplicitParameterNode).asParameter() = callable.getParameter(paramIdx) and
         parameterName = e.asParameter().getName()
         or
+        e.(DataFlow::ExplicitParameterNodeNoBody).asParameter() = callable.getParameter(paramIdx) and
+        parameterName = e.asParameter().getName()
+        or
         e.(DataFlow::InstanceParameterNode).getCallable() = callable and
         paramIdx = -1 and
         parameterName = "this"

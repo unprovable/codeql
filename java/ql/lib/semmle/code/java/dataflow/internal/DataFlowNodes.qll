@@ -31,6 +31,7 @@ private module Cached {
       not e.getParent*() instanceof Annotation
     } or
     TExplicitParameterNode(Parameter p) { exists(p.getCallable().getBody()) } or
+    TExplicitParameterNodeNoBody(Parameter p) { not exists(p.getCallable().getBody()) } or
     TImplicitVarargsArray(Call c) {
       c.getCallee().isVarargs() and
       not exists(Argument arg | arg.getCall() = c and arg.isExplicitVarargsArray())
@@ -105,7 +106,13 @@ module Public {
     Expr asExpr() { result = this.(ExprNode).getExpr() }
 
     /** Gets the parameter corresponding to this node, if any. */
-    Parameter asParameter() { result = this.(ExplicitParameterNode).getParameter() }
+    Parameter asParameter() {
+      result =
+        [
+          this.(ExplicitParameterNode).getParameter(),
+          this.(ExplicitParameterNodeNoBody).getParameter()
+        ]
+    }
 
     /** Gets the type of this node. */
     Type getType() {
@@ -196,6 +203,26 @@ module Public {
     Parameter param;
 
     ExplicitParameterNode() { this = TExplicitParameterNode(param) }
+
+    override string toString() { result = param.toString() }
+
+    override Location getLocation() { result = param.getLocation() }
+
+    /** Gets the parameter corresponding to this node. */
+    Parameter getParameter() { result = param }
+
+    override predicate isParameterOf(DataFlowCallable c, int pos) {
+      c.asCallable().getParameter(pos) = param
+    }
+  }
+
+  /**
+   * A parameter of a method without a body (an interface method), viewed as a node in a data flow graph.
+   */
+  class ExplicitParameterNodeNoBody extends ParameterNode, TExplicitParameterNodeNoBody {
+    Parameter param;
+
+    ExplicitParameterNodeNoBody() { this = TExplicitParameterNodeNoBody(param) }
 
     override string toString() { result = param.toString() }
 
